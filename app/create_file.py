@@ -1,10 +1,10 @@
-from sys import argv
-from os import makedirs, getcwd, path
+import argparse
+import os
 from datetime import datetime
 
 
 def create_dirs(dir_1: str, dir_2: str) -> None:
-    makedirs(path.join(getcwd(), dir_1, dir_2))
+    os.makedirs(os.path.join(os.getcwd(), dir_1, dir_2), exist_ok=True)
 
 
 def filling_file_with_content(file_name: str) -> None:
@@ -19,20 +19,23 @@ def filling_file_with_content(file_name: str) -> None:
             file.write(f"{line_index} {line}\n")
 
 
-if __name__ == "__main__":
-    terminal_arguments = argv[1:]
-    if terminal_arguments[0] == "-d" and "-f" not in terminal_arguments:
-        create_dirs(terminal_arguments[1], terminal_arguments[2])
+def main():
+    parser = argparse.ArgumentParser(description="Create directories and fill a file with content")
+    parser.add_argument("-d", "--dir", nargs=2, help="Directory names", metavar=("dir_1", "dir_2"))
+    parser.add_argument("-f", "--file", help="File name")
+    args = parser.parse_args()
 
-    if terminal_arguments[0] == "-f" and "-d" not in terminal_arguments:
-        filling_file_with_content(terminal_arguments[1])
-
-    if "-d" in terminal_arguments and "-f" in terminal_arguments:
-        create_dirs(terminal_arguments[1], terminal_arguments[2])
-        file_path = new_dir_path = path.join(
-            getcwd(),
-            terminal_arguments[1],
-            terminal_arguments[2],
-            terminal_arguments[4]
-        )
+    if args.dir and args.file:
+        create_dirs(args.dir[0], args.dir[1])
+        file_path = os.path.join(os.getcwd(), args.dir[0], args.dir[1], args.file)
         filling_file_with_content(file_path)
+
+    if args.dir:
+        create_dirs(args.dir[0], args.dir[1])
+
+    if args.file:
+        filling_file_with_content(args.file)
+
+
+if __name__ == "__main__":
+    main()

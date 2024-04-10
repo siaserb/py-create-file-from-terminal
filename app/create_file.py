@@ -19,15 +19,28 @@ def filling_file_with_content(file_name: str) -> None:
             file.write(f"{line_index} {line}\n")
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Create directories and fill a file with content")
-    parser.add_argument("-d", "--dir", nargs=2, help="Directory names", metavar=("dir_1", "dir_2"))
-    parser.add_argument("-f", "--file", help="File name")
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Create directories and fill a file with content"
+    )
+    parser.add_argument("-d",
+                        "--dir",
+                        nargs=2,
+                        help="Directory names",
+                        metavar=("dir_1", "dir_2"))
+
+    parser.add_argument("-f",
+                        "--file",
+                        help="File name")
+
     args = parser.parse_args()
 
     if args.dir and args.file:
         create_dirs(args.dir[0], args.dir[1])
-        file_path = os.path.join(os.getcwd(), args.dir[0], args.dir[1], args.file)
+        file_path = os.path.join(os.getcwd(),
+                                 args.dir[0],
+                                 args.dir[1],
+                                 args.file)
         filling_file_with_content(file_path)
 
     if args.dir:

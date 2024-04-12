@@ -7,16 +7,25 @@ def create_dirs(dir_1: str, dir_2: str) -> None:
     os.makedirs(os.path.join(os.getcwd(), dir_1, dir_2), exist_ok=True)
 
 
-def filling_file_with_content(file_name: str) -> None:
-    with open(file_name, "a") as file:
-        file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-        line_index = 0
-        while True:
-            line = input("Enter content line: ")
-            if line == "stop":
-                break
-            line_index += 1
-            file.write(f"{line_index} {line}\n")
+def get_user_input() -> str:
+    lines = []
+    line_index = 0
+    while True:
+        line = input("Enter content line: ")
+        if line == "stop":
+            break
+        line_index += 1
+        lines.append(f"{line_index} {line}")
+    return "\n".join(lines)
+
+
+def write_content_to_file(file_name: str, content: str) -> None:
+    try:
+        with open(file_name, "a") as file:
+            file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            file.write(content)
+    except Exception as e:
+        print(f"Error occurred while writing to file: {e}")
 
 
 def main() -> None:
@@ -35,19 +44,18 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    if args.dir and args.file:
-        create_dirs(args.dir[0], args.dir[1])
-        file_path = os.path.join(os.getcwd(),
-                                 args.dir[0],
-                                 args.dir[1],
-                                 args.file)
-        filling_file_with_content(file_path)
-
     if args.dir:
         create_dirs(args.dir[0], args.dir[1])
-
-    if args.file:
-        filling_file_with_content(args.file)
+        if args.file:
+            file_path = os.path.join(os.getcwd(),
+                                     args.dir[0],
+                                     args.dir[1],
+                                     args.file)
+            content = get_user_input()
+            write_content_to_file(file_path, content)
+    elif args.file:
+        content = get_user_input()
+        write_content_to_file(args.file, content)
 
 
 if __name__ == "__main__":
